@@ -3,6 +3,7 @@ import Button from '../components/button/button';
 import Card from '../components/card/card';
 import { userStore } from '../stores/userStore';
 import { useRouter } from 'next/router';
+import Input from '../components/input/input';
 
 const Home = () => {
   const [name, setName] = useState<string | undefined>(undefined);
@@ -25,8 +26,6 @@ const Home = () => {
     if (name === undefined || name.length === 0) {
       setNameHasError(true);
     } else {
-      console.log({ name });
-
       setUserName(name);
       router.push('/create_form');
     }
@@ -44,9 +43,9 @@ const Home = () => {
             >
               <label class="font-sans">Enter your name:</label>
               <div class="flex flex-col">
-                <input
+                <Input
                   type="text"
-                  class={`rounded p-2 ${
+                  classStyle={`rounded p-2 ${
                     nameHasError ? 'border-red-500 border-2 mb-0' : 'mb-4'
                   }`}
                   onChange={handleChangeName}
