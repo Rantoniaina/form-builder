@@ -41,21 +41,16 @@ const Home = () => {
               noValidate
               onSubmit={handleSubmit}
             >
-              <label class="font-sans">Enter your name:</label>
-              <div class="flex flex-col">
-                <Input
-                  type="text"
-                  classStyle={`rounded p-2 ${
-                    nameHasError ? 'border-red-500 border-2 mb-0' : 'mb-4'
-                  }`}
-                  onChange={handleChangeName}
-                />
-                {nameHasError && (
-                  <span class="text-xs text-red-500 mb-4">
-                    Please enter your name
-                  </span>
-                )}
-              </div>
+              <Input
+                type="text"
+                classStyle={`rounded p-2 ${
+                  nameHasError ? 'border-red-500 border-2 mb-0' : 'mb-4'
+                }`}
+                onChange={handleChangeName}
+                label="Enter your name:"
+                error={nameHasError}
+                errorMessage="Please enter your name"
+              />
               <Button
                 type="submit"
                 label="Create my form"
