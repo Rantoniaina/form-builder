@@ -1,10 +1,15 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState, MouseEvent } from 'react';
 import Button from '../components/button/button';
 import Card from '../components/card/card';
+import { userStore } from '../stores/userStore';
+import { useRouter } from 'next/router';
 
 const Home = () => {
   const [name, setName] = useState<string | undefined>(undefined);
   const [nameHasError, setNameHasError] = useState<boolean>(false);
+
+  const setUserName = userStore((state) => state.setUserName);
+  const router = useRouter();
 
   const handleChangeName = (e: ChangeEvent<HTMLInputElement>) => {
     if (nameHasError) {
@@ -13,10 +18,17 @@ const Home = () => {
     setName(e.target.value);
   };
 
-  const handleSubmit = () => {
-    if (name === undefined || name.length > 0) {
+  const handleSubmit = (
+    e: FormEvent<HTMLFormElement> | MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    if (name === undefined || name.length === 0) {
       setNameHasError(true);
-      return;
+    } else {
+      console.log({ name });
+
+      setUserName(name);
+      router.push('/create_form');
     }
   };
 
@@ -25,18 +37,18 @@ const Home = () => {
       <Card
         content={
           <div class="flex flex-col items-center">
-            <form class="flex flex-col items-center" onSubmit={handleSubmit}>
-              <label for="i_name" class="font-sans">
-                Enter your name:
-              </label>
+            <form
+              class="flex flex-col items-center"
+              noValidate
+              onSubmit={handleSubmit}
+            >
+              <label class="font-sans">Enter your name:</label>
               <div class="flex flex-col">
                 <input
                   type="text"
                   class={`rounded p-2 ${
                     nameHasError ? 'border-red-500 border-2 mb-0' : 'mb-4'
                   }`}
-                  name="i_name"
-                  id="i_name"
                   onChange={handleChangeName}
                 />
                 {nameHasError && (
