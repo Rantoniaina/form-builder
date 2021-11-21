@@ -1,26 +1,33 @@
 import { ChangeEvent } from 'react';
 
-interface InputProps {
-  type?: string;
+interface TextAreaProps {
   classStyle?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   label?: string;
   error?: boolean;
   errorMessage?: string;
+  rows?: number;
+  cols?: number;
 }
 
-const Input = ({
-  type,
+const TextArea = ({
   classStyle,
   onChange,
   label,
   error,
   errorMessage,
-}: InputProps) => (
+  rows,
+  cols,
+}: TextAreaProps) => (
   <div class="flex flex-col items-center">
     {label && label.length > 0 && <label class="font-sans">{label}</label>}
     <div class="flex flex-col">
-      <input type={type} class={classStyle} onChange={onChange} />
+      <textarea
+        class={classStyle}
+        onChange={onChange}
+        rows={rows || 4}
+        cols={cols || 50}
+      />
       {error && errorMessage && errorMessage.length > 0 && (
         <span class="text-xs text-red-500 mb-4">{errorMessage}</span>
       )}
@@ -28,4 +35,4 @@ const Input = ({
   </div>
 );
 
-export default Input;
+export default TextArea;
