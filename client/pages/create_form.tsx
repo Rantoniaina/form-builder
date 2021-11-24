@@ -7,6 +7,7 @@ import TextArea from '../components/textarea/textarea';
 import { userStore } from '../stores/userStore';
 import axios from 'axios';
 import FormType from '../models/FormType';
+import Button from '../components/button/button';
 
 const CreateForms = () => {
   const userName = userStore((state) => state.userName);
@@ -54,8 +55,8 @@ const CreateForms = () => {
     <div class="flex flex-col items-center h-screen justify-center bg-blue-100">
       <Card
         content={
-          <div>
-            <h1 class="mb-2">Create form</h1>
+          <div class="flex flex-col items-center">
+            <h1 class="mb-2">CREATE FORM</h1>
             <form>
               <Input
                 type="text"
@@ -73,6 +74,13 @@ const CreateForms = () => {
                 label="Description"
               />
               {inputs && <InputChoice inputs={inputs} />}
+              <div class="flex flex-col items-center justify-center text-2xl border-indigo-900	p-2 rounded border-dashed border mt-4 hover:bg-gray-300 cursor-pointer">
+                +
+              </div>
+              <div class="flex justify-evenly mt-4">
+                <Button label="Create" type="submit" />
+                <Button label="Cancel" type="button" />
+              </div>
             </form>
           </div>
         }
