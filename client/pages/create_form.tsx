@@ -2,8 +2,11 @@ import { useRouter } from 'next/router';
 import { ChangeEvent, useEffect, useState } from 'react';
 import Card from '../components/card/card';
 import Input from '../components/input/input';
+import InputChoice from '../components/inputChoice/inputChoice';
 import TextArea from '../components/textarea/textarea';
 import { userStore } from '../stores/userStore';
+import axios from 'axios';
+import FormType from '../models/FormType';
 
 const CreateForms = () => {
   const userName = userStore((state) => state.userName);
@@ -12,6 +15,7 @@ const CreateForms = () => {
   const [title, setTitle] = useState<string | undefined>(undefined);
   const [description, setDescription] = useState<string | undefined>(undefined);
   const [titleHasError, setTitleHasError] = useState<boolean>(false);
+  const [inputs, setInputs] = useState<FormType[] | undefined>(undefined);
 
   const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     if (titleHasError) {
@@ -29,6 +33,21 @@ const CreateForms = () => {
       router.push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (process.env.BACKEND_URL) {
+      axios.get(`${process.env.BACKEND_URL}/form-types`).then((response) => {
+        if (
+          response &&
+          response.data &&
+          response.data.formTypes &&
+          response.data.formTypes.length > 0
+        ) {
+          setInputs(response.data.formTypes);
+        }
+      });
+    }
   }, []);
 
   return (
@@ -53,6 +72,7 @@ const CreateForms = () => {
                 onChange={handleChangeDescription}
                 label="Description"
               />
+              {inputs && <InputChoice inputs={inputs} />}
             </form>
           </div>
         }

@@ -20,7 +20,7 @@ const TextArea = ({
   cols,
 }: TextAreaProps) => (
   <div class="flex flex-col items-center">
-    {label && label.length > 0 && <label class="font-sans">{label}</label>}
+    {label && label.length > 0 && <label class="font-sans mb">{label}</label>}
     <div class="flex flex-col">
       <textarea
         class={classStyle}
