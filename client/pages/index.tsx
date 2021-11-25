@@ -57,9 +57,6 @@ const Home = () => {
                 onClick={handleSubmit}
               />
             </form>
-            <a href="#" class="underline text-xs text-gray-400">
-              Visit existing forms
-            </a>
           </div>
         }
       />

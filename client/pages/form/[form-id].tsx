@@ -15,8 +15,7 @@ const Form = () => {
     const parameter = query['form-id'];
     if (parameter && process.env.BACKEND_URL) {
       axios
-        .get(`${process.env.BACKEND_URL}/forms/2`)
-        // .get(`${process.env.BACKEND_URL}/forms/${parameter}`)
+        .get(`${process.env.BACKEND_URL}/forms/${parameter}`)
         .then((response) => {
           if (response && response.data && response.data.form_details) {
             setFormDetails(response.data.form_details);
