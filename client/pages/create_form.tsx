@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState, MouseEvent } from 'react';
 import Card from '../components/card/card';
 import Input from '../components/input/input';
 import InputChoice from '../components/inputChoice/inputChoice';
@@ -8,23 +8,22 @@ import { userStore } from '../stores/userStore';
 import axios from 'axios';
 import FormType from '../models/FormType';
 import Button from '../components/button/button';
-import FormElement from '../models/FormElement';
 import { formElementStore } from '../stores/formElementStore';
 import FormElementCmp from '../components/formElement/formElement';
 
 const CreateForms = () => {
-  const userName = userStore((state) => state.userName);
   const router = useRouter();
   const formElements = formElementStore((state) => state.formElements);
+
+  const userName = userStore((state) => state.userName);
+  const userNameRemoveFn = userStore((state) => state.removeUserName);
 
   const [title, setTitle] = useState<string | undefined>(undefined);
   const [description, setDescription] = useState<string | undefined>(undefined);
   const [titleHasError, setTitleHasError] = useState<boolean>(false);
   const [inputs, setInputs] = useState<FormType[] | undefined>(undefined);
   const [openInputChoice, setOpenInputChoice] = useState<boolean>(false);
-  const [createdInputs, setCreatedInputs] = useState<
-    FormElement[] | undefined
-  >();
+  const [inputsHasError, setInputsHasError] = useState<boolean>(false);
 
   const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     if (titleHasError) {
@@ -38,6 +37,7 @@ const CreateForms = () => {
   };
 
   const handleOpenInputChoice = () => {
+    setInputsHasError(false);
     setOpenInputChoice(true);
   };
 
@@ -45,12 +45,31 @@ const CreateForms = () => {
     setOpenInputChoice(false);
   };
 
+  const handleCancel = () => {
+    userNameRemoveFn();
+  };
+
+  const handleSubmit = (
+    e: FormEvent<HTMLFormElement> | MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    let hasError = false;
+    if (title === undefined || title.length === 0) {
+      hasError = true;
+      setTitleHasError(true);
+    }
+    if (formElements === undefined || formElements.length === 0) {
+      hasError = true;
+      setInputsHasError(true);
+    }
+  };
+
   useEffect(() => {
     if (userName === undefined || userName.length === 0) {
       router.push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userName]);
 
   useEffect(() => {
     if (process.env.BACKEND_URL) {
@@ -73,7 +92,7 @@ const CreateForms = () => {
         content={
           <div class="flex flex-col items-center">
             <h1 class="mb-2">CREATE FORM</h1>
-            <form>
+            <form noValidate onClick={handleSubmit}>
               <Input
                 type="text"
                 classStyle={`rounded p-2 ${
@@ -83,11 +102,13 @@ const CreateForms = () => {
                 label="Title"
                 error={titleHasError}
                 errorMessage="Please enter a title"
+                value={title}
               />
               <TextArea
                 classStyle="rounded p-2 mb-4"
                 onChange={handleChangeDescription}
                 label="Description"
+                value={description}
               />
               {formElements &&
                 formElements.map((formElement, index) => (
@@ -111,9 +132,14 @@ const CreateForms = () => {
                   )}
                 </>
               )}
+              {inputsHasError && (
+                <span class="text-xs text-red-500 mb-4">
+                  Please select an input
+                </span>
+              )}
               <div class="flex justify-evenly mt-4">
-                <Button label="Create" type="submit" />
-                <Button label="Cancel" type="button" />
+                <Button label="Create" type="submit" onClick={handleSubmit} />
+                <Button label="Cancel" type="button" onClick={handleCancel} />
               </div>
             </form>
           </div>
