@@ -8,16 +8,23 @@ import { userStore } from '../stores/userStore';
 import axios from 'axios';
 import FormType from '../models/FormType';
 import Button from '../components/button/button';
+import FormElement from '../models/FormElement';
+import { formElementStore } from '../stores/formElementStore';
+import FormElementCmp from '../components/formElement/formElement';
 
 const CreateForms = () => {
   const userName = userStore((state) => state.userName);
   const router = useRouter();
+  const formElements = formElementStore((state) => state.formElements);
 
   const [title, setTitle] = useState<string | undefined>(undefined);
   const [description, setDescription] = useState<string | undefined>(undefined);
   const [titleHasError, setTitleHasError] = useState<boolean>(false);
   const [inputs, setInputs] = useState<FormType[] | undefined>(undefined);
   const [openInputChoice, setOpenInputChoice] = useState<boolean>(false);
+  const [createdInputs, setCreatedInputs] = useState<
+    FormElement[] | undefined
+  >();
 
   const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     if (titleHasError) {
@@ -82,6 +89,10 @@ const CreateForms = () => {
                 onChange={handleChangeDescription}
                 label="Description"
               />
+              {formElements &&
+                formElements.map((formElement, index) => (
+                  <FormElementCmp formElement={formElement} key={index} />
+                ))}
               {inputs && (
                 <>
                   {openInputChoice && (

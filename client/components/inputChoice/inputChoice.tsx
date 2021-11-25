@@ -1,7 +1,9 @@
 import { ChangeEvent, useState } from 'react';
 import EntryTypeEnum from '../../constants/EntryTypeEnum';
+import FormElement from '../../models/FormElement';
 import FormType from '../../models/FormType';
 import KeyValue from '../../models/KeyValue';
+import { formElementStore } from '../../stores/formElementStore';
 import Button from '../button/button';
 import Input from '../input/input';
 import Select from '../select/select';
@@ -27,6 +29,7 @@ const InputChoice = ({ inputs, closeInputChoice }: InputChoiceProps) => {
       value: 'Cancel',
     },
   ];
+  const formElementAddFn = formElementStore((state) => state.addFormElement);
 
   const [title, setTitle] = useState<string | undefined>(undefined);
   const [inputTitleHasError, setInputTitleHasError] = useState<boolean>(false);
@@ -85,6 +88,21 @@ const InputChoice = ({ inputs, closeInputChoice }: InputChoiceProps) => {
     ) {
       hasError = true;
       setButtonActionHasError(true);
+    }
+    if (!hasError) {
+      const formElement: FormElement = {
+        for_id: selectedInput!.id,
+        ismandatory: required,
+        options:
+          selectedInput?.entry_type === EntryTypeEnum.MULTIPLE_VALUE
+            ? choicesList
+            : selectedInput?.entry_type === EntryTypeEnum.ACTION
+            ? buttonAction
+            : undefined,
+        title,
+      };
+      formElementAddFn(formElement);
+      closeInputChoice();
     }
   };
 
