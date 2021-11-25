@@ -195,6 +195,7 @@ exports.getForm = (req, res) => {
                   form_element_options: row.form_element_options,
                   form_type_name: row.form_type_name,
                   form_type_entry_type: row.form_type_entry_type,
+                  form_element_mandatory: row.form_element_mandatory,
                 })),
               };
               res.status(200).send({ form_details: result });
