@@ -13,7 +13,11 @@ import FormElementCmp from '../components/formElement/formElement';
 
 const CreateForms = () => {
   const router = useRouter();
+
   const formElements = formElementStore((state) => state.formElements);
+  const formElementsClearFn = formElementStore(
+    (state) => state.clearFormElements
+  );
 
   const userName = userStore((state) => state.userName);
   const userNameRemoveFn = userStore((state) => state.removeUserName);
@@ -84,6 +88,8 @@ const CreateForms = () => {
         })
         .then((response) => {
           if (response && response.data && response.data.success) {
+            formElementsClearFn();
+            router.push(`/form/${response.data.success}`);
           } else {
             setCreatingHasError(true);
           }
@@ -171,8 +177,18 @@ const CreateForms = () => {
                 </span>
               )}
               <div class="flex justify-evenly mt-4">
-                <Button label="Create" type="submit" onClick={handleSubmit} />
-                <Button label="Cancel" type="button" onClick={handleCancel} />
+                <Button
+                  label={loading ? 'Creating ...' : 'Create'}
+                  type="submit"
+                  onClick={handleSubmit}
+                  disabled={loading}
+                />
+                <Button
+                  label="Cancel"
+                  type="button"
+                  onClick={handleCancel}
+                  disabled={loading}
+                />
               </div>
               {creatingHasError && (
                 <span class="text-xs text-red-500 mb-4">

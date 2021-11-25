@@ -21,7 +21,7 @@ const TextArea = ({
   cols,
   value,
 }: TextAreaProps) => (
-  <div class="flex flex-col items-center">
+  <div class={`flex flex-col items-center ${error ? 'mb-0' : 'mb-4'}`}>
     {label && label.length > 0 && <label class="font-sans mb">{label}</label>}
     <div class="flex flex-col">
       <textarea

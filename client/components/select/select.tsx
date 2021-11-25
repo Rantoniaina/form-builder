@@ -7,6 +7,7 @@ interface SelectProps {
   selected: string | number | undefined;
   options: KeyValue[];
   onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
+  label?: string;
 }
 
 const Select = ({
@@ -15,12 +16,19 @@ const Select = ({
   selected,
   options,
   onChange,
+  label,
 }: SelectProps) => (
   <>
     <select
       class={`rounded p-2 ${error ? 'border-red-500 border-2 mb-0' : 'mb-4'}`}
       onChange={onChange}
     >
+      {label && (
+        <option
+          selected={selected === undefined}
+          value={undefined}
+        >{`-- Select ${label} --`}</option>
+      )}
       {options.map((option: KeyValue, index: number) => (
         <option
           key={index}

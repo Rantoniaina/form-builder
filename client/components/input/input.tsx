@@ -19,7 +19,7 @@ const Input = ({
   errorMessage,
   value,
 }: InputProps) => (
-  <div class="flex flex-col items-center">
+  <div class={`flex flex-col items-center ${error ? 'mb-0' : 'mb-4'}`}>
     {label && label.length > 0 && <label class="font-sans">{label}</label>}
     <div class="flex flex-col">
       <input type={type} class={classStyle} onChange={onChange} value={value} />
