@@ -24,6 +24,8 @@ const CreateForms = () => {
   const [inputs, setInputs] = useState<FormType[] | undefined>(undefined);
   const [openInputChoice, setOpenInputChoice] = useState<boolean>(false);
   const [inputsHasError, setInputsHasError] = useState<boolean>(false);
+  const [creatingHasError, setCreatingHasError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     if (titleHasError) {
@@ -53,6 +55,9 @@ const CreateForms = () => {
     e: FormEvent<HTMLFormElement> | MouseEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();
+    if (creatingHasError) {
+      setCreatingHasError(false);
+    }
     let hasError = false;
     if (title === undefined || title.length === 0) {
       hasError = true;
@@ -61,6 +66,34 @@ const CreateForms = () => {
     if (formElements === undefined || formElements.length === 0) {
       hasError = true;
       setInputsHasError(true);
+    }
+    if (!hasError && process.env.BACKEND_URL) {
+      setLoading(true);
+      axios
+        .post(`${process.env.BACKEND_URL}/forms`, {
+          form_info: {
+            form_user: {
+              name: userName,
+            },
+            form: {
+              title,
+              description,
+            },
+            form_elements: formElements,
+          },
+        })
+        .then((response) => {
+          if (response && response.data && response.data.success) {
+          } else {
+            setCreatingHasError(true);
+          }
+        })
+        .catch(() => {
+          setCreatingHasError(true);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   };
 
@@ -92,7 +125,7 @@ const CreateForms = () => {
         content={
           <div class="flex flex-col items-center">
             <h1 class="mb-2">CREATE FORM</h1>
-            <form noValidate onClick={handleSubmit}>
+            <form noValidate onSubmit={handleSubmit}>
               <Input
                 type="text"
                 classStyle={`rounded p-2 ${
@@ -141,6 +174,11 @@ const CreateForms = () => {
                 <Button label="Create" type="submit" onClick={handleSubmit} />
                 <Button label="Cancel" type="button" onClick={handleCancel} />
               </div>
+              {creatingHasError && (
+                <span class="text-xs text-red-500 mb-4">
+                  Error on creating form
+                </span>
+              )}
             </form>
           </div>
         }

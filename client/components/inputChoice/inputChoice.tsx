@@ -91,7 +91,7 @@ const InputChoice = ({ inputs, closeInputChoice }: InputChoiceProps) => {
     }
     if (!hasError) {
       const formElement: FormElement = {
-        for_id: selectedInput!.id,
+        id: selectedInput!.id,
         ismandatory: required,
         options:
           selectedInput?.entry_type === EntryTypeEnum.MULTIPLE_VALUE
