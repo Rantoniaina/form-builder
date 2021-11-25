@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const formTypeRoutes = require('./routes/formType');
+const formRoutes = require('./routes/form');
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -26,6 +27,7 @@ app.use(function (req, res, next) {
 });
 
 app.use('/form-types', formTypeRoutes);
+app.use('/forms', formRoutes);
 
 app.listen(port, (error) => {
   if (error) throw error;
