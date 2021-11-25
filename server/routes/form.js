@@ -6,4 +6,8 @@ router.post('/', (req, res) => {
   formController.createForm(req, res);
 });
 
+router.get('/:id', (req, res) => {
+  formController.getForm(req, res);
+});
+
 module.exports = router;

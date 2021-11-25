@@ -1,6 +1,7 @@
 const {
   ERROR_NO_FORM_DATA,
   ERROR_TRANSACTION,
+  ERROR_NO_FORM,
 } = require('../constants/errors');
 const {
   formElementsHasError,
@@ -158,6 +159,53 @@ exports.createForm = (req, res) => {
         }
       });
     }
+  } else {
+    res.status(401).send({ error: ERROR_NO_FORM_DATA });
+  }
+};
+
+exports.getForm = (req, res) => {
+  if (req && req.params && req.params.id && !isEmpty(req.params.id)) {
+    const formId = req.params.id;
+    pgConnect().connect((err, client, done) => {
+      if (err) {
+        done();
+        sendError(
+          'Error connecting to db : ',
+          err.stack,
+          500,
+          ERROR_TRANSACTION,
+          res
+        );
+      } else {
+        client.query('BEGIN', (err) => {
+          if (shouldAbort(err, res, client, done)) return;
+          const queryText = 'SELECT * FROM form_details WHERE form_id = $1';
+          client.query(queryText, [formId], (err, response) => {
+            if (shouldAbort(err, res, client, done)) return;
+            if (response && response.rowCount && response.rowCount > 0) {
+              done();
+              let result = {
+                form_id: response.rows[0].form_id,
+                form_title: response.rows[0].form_title,
+                form_description: response.rows[0].form_description,
+                username: response.rows[0].username,
+                form_elements: response.rows.map((row) => ({
+                  form_element_title: row.form_element_title,
+                  form_element_options: row.form_element_options,
+                  form_type_name: row.form_type_name,
+                  form_type_entry_type: row.form_type_entry_type,
+                })),
+              };
+              res.status(200).send({ form_details: result });
+            } else {
+              done();
+              sendError('Form not found', null, 404, ERROR_NO_FORM);
+            }
+          });
+        });
+      }
+    });
   } else {
     res.status(401).send({ error: ERROR_NO_FORM_DATA });
   }
