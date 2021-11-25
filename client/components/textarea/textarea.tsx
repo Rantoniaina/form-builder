@@ -8,6 +8,7 @@ interface TextAreaProps {
   errorMessage?: string;
   rows?: number;
   cols?: number;
+  value?: string;
 }
 
 const TextArea = ({
@@ -18,6 +19,7 @@ const TextArea = ({
   errorMessage,
   rows,
   cols,
+  value,
 }: TextAreaProps) => (
   <div class="flex flex-col items-center">
     {label && label.length > 0 && <label class="font-sans mb">{label}</label>}
@@ -27,6 +29,7 @@ const TextArea = ({
         onChange={onChange}
         rows={rows || 4}
         cols={cols || 50}
+        value={value}
       />
       {error && errorMessage && errorMessage.length > 0 && (
         <span class="text-xs text-red-500 mb-4">{errorMessage}</span>

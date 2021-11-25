@@ -7,6 +7,7 @@ interface InputProps {
   label?: string;
   error?: boolean;
   errorMessage?: string;
+  value?: string;
 }
 
 const Input = ({
@@ -16,11 +17,12 @@ const Input = ({
   label,
   error,
   errorMessage,
+  value,
 }: InputProps) => (
   <div class="flex flex-col items-center">
     {label && label.length > 0 && <label class="font-sans">{label}</label>}
     <div class="flex flex-col">
-      <input type={type} class={classStyle} onChange={onChange} />
+      <input type={type} class={classStyle} onChange={onChange} value={value} />
       {error && errorMessage && errorMessage.length > 0 && (
         <span class="text-xs text-red-500 mb-4">{errorMessage}</span>
       )}

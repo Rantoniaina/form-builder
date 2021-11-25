@@ -17,6 +17,7 @@ const CreateForms = () => {
   const [description, setDescription] = useState<string | undefined>(undefined);
   const [titleHasError, setTitleHasError] = useState<boolean>(false);
   const [inputs, setInputs] = useState<FormType[] | undefined>(undefined);
+  const [openInputChoice, setOpenInputChoice] = useState<boolean>(false);
 
   const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     if (titleHasError) {
@@ -27,6 +28,14 @@ const CreateForms = () => {
 
   const handleChangeDescription = (e: ChangeEvent<HTMLInputElement>) => {
     setDescription(e.target.value);
+  };
+
+  const handleOpenInputChoice = () => {
+    setOpenInputChoice(true);
+  };
+
+  const handleCloseInputChoice = () => {
+    setOpenInputChoice(false);
   };
 
   useEffect(() => {
@@ -73,10 +82,24 @@ const CreateForms = () => {
                 onChange={handleChangeDescription}
                 label="Description"
               />
-              {inputs && <InputChoice inputs={inputs} />}
-              <div class="flex flex-col items-center justify-center text-2xl border-indigo-900	p-2 rounded border-dashed border mt-4 hover:bg-gray-300 cursor-pointer">
-                +
-              </div>
+              {inputs && (
+                <>
+                  {openInputChoice && (
+                    <InputChoice
+                      inputs={inputs}
+                      closeInputChoice={handleCloseInputChoice}
+                    />
+                  )}
+                  {!openInputChoice && (
+                    <div
+                      class="flex flex-col items-center justify-center text-2xl border-indigo-900	p-2 rounded border-dashed border mt-4 hover:bg-gray-300 cursor-pointer"
+                      onClick={handleOpenInputChoice}
+                    >
+                      +
+                    </div>
+                  )}
+                </>
+              )}
               <div class="flex justify-evenly mt-4">
                 <Button label="Create" type="submit" />
                 <Button label="Cancel" type="button" />
